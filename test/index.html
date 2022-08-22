@@ -16,12 +16,12 @@
         height: 100%
     }
 </style>
+<script type="text/javascript" src="https://unpkg.com/dat.gui@0.7.6/build/dat.gui.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/maptalks/dist/maptalks.css">
 <script type="text/javascript" src="https://unpkg.com/maptalks/dist/maptalks.min.js"></script>
-<script type="text/javascript" src="https://unpkg.com/randomcolor@0.6.2/randomColor.js"></script>
 <script type="text/javascript"
     src="https://maptalks.org/examples/cn/tilelayer-projection/tile-mask/raw/boundary.js"></script>
-<script type="text/javascript" src="../dist/lineseg.js"></script>
+<script type="text/javascript" src="https://unpkg.com/lineseg/dist/lineseg.js"></script>
 
 <body>
 
@@ -40,19 +40,32 @@
 
         const layer = new maptalks.VectorLayer('layer').addTo(map);
         const line = boundary[0];
-        const time = 'time';
-        console.time(time);
-        const segs = lineseg.lineSeg(line, { segDistance: 100 });
-        console.timeEnd(time);
-        console.log(segs);
-        const lines = segs.map((seg, index) => {
-            return new maptalks.LineString(seg, {
-                symbol: {
-                    lineColor: index % 2 === 0 ? 'red' : 'black'
-                }
-            })
-        });
-        layer.addGeometry(lines);
+
+        function update() {
+            layer.clear();
+            const time = 'time';
+            console.time(time);
+            const segs = lineseg.lineSeg(line, { segDistance: params.segDistance });
+            console.timeEnd(time);
+            console.log(segs);
+            const lines = segs.map((seg, index) => {
+                return new maptalks.LineString(seg, {
+                    symbol: {
+                        lineWidth: 4,
+                        lineColor: index % 2 === 0 ? 'red' : 'black'
+                    }
+                })
+            });
+            layer.addGeometry(lines);
+        }
+
+        const params = {
+            segDistance: 50,
+        }
+
+        var gui = new dat.GUI({ width: 350 });
+        gui.add(params, 'segDistance', 1, 2000).onChange(update);
+        update();
 
     </script>
 </body>

@@ -17,12 +17,13 @@
         height: 100%
     }
 </style>
+<script type="text/javascript" src="https://unpkg.com/dat.gui@0.7.6/build/dat.gui.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/maptalks/dist/maptalks.css">
 <script type="text/javascript" src="https://unpkg.com/maptalks/dist/maptalks.min.js"></script>
 <script type="text/javascript" src="https://unpkg.com/randomcolor@0.6.2/randomColor.js"></script>
 <script type="text/javascript"
     src="https://maptalks.org/examples/cn/tilelayer-projection/tile-mask/raw/boundary.js"></script>
-<script type="text/javascript" src="../dist/lineseg.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/lineseg/dist/lineseg.js"></script>
 
 <body>
 
@@ -48,11 +49,6 @@
         const points = lineString.getCoordinates().map(c => {
             return map.coordinateToContainerPoint(c).toArray();
         });
-        const time = 'time';
-        console.time(time);
-        const segs = lineseg.lineSeg(points, { segDistance: 50, isGeo: false });
-        console.timeEnd(time);
-        console.log(segs);
 
         const canvas = document.createElement('canvas');
         const size = map.getSize();
@@ -61,13 +57,12 @@
         document.body.appendChild(canvas);
         const ctx = canvas.getContext('2d');
 
-        segs.forEach((seg, index) => {
-            drawLine(seg, randomColor());
-        });
+
 
 
         function drawLine(seg, color) {
             ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
             ctx.beginPath();
             for (let i = 0, len = seg.length; i < len; i++) {
                 const [x, y] = seg[i];
@@ -79,6 +74,27 @@
             }
             ctx.stroke();
         }
+
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const time = 'time';
+            console.time(time);
+            const segs = lineseg.lineSeg(points, { segDistance: params.segDistance, isGeo: false });
+            console.timeEnd(time);
+            console.log(segs);
+            segs.forEach((seg, index) => {
+                drawLine(seg, index % 2 === 0 ? 'red' : 'black');
+            });
+        }
+
+        const params = {
+            segDistance: 50,
+        }
+
+        var gui = new dat.GUI({ width: 350 });
+        gui.add(params, 'segDistance', 1, 300).onChange(update);
+        update();
+
     </script>
 </body>
 
