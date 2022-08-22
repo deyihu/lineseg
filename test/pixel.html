@@ -50,7 +50,7 @@
         });
         const time = 'time';
         console.time(time);
-        const segs = lineseg.lineSeg(points, { segDistance: .1, isGeo: false });
+        const segs = lineseg.lineSeg(points, { segDistance: 50, isGeo: false });
         console.timeEnd(time);
         console.log(segs);
 
