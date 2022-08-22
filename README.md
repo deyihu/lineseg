@@ -2,12 +2,16 @@
 
 Cut a line segment into multiple segments of equal length. Born in [maptalks.three](https://github.com/maptalks/maptalks.three)
 
-## install
+## DEMO 
+[geo line](https://deyihu.github.io/lineseg/test/index.html)  
+[simple line](https://deyihu.github.io/lineseg/test/pixel.html)
+
+## Install
 
 ### NPM
 
 ```sh
-npm i lineseg
+npm i linese
 #or
 yarn add lineseg
 #or

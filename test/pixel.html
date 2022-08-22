@@ -23,7 +23,7 @@
 <script type="text/javascript" src="https://unpkg.com/randomcolor@0.6.2/randomColor.js"></script>
 <script type="text/javascript"
     src="https://maptalks.org/examples/cn/tilelayer-projection/tile-mask/raw/boundary.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/lineseg/dist/lineseg.js"></script>
+<script type="text/javascript" src="https://unpkg.com/lineseg/dist/lineseg.js"></script>
 
 <body>
 
@@ -49,6 +49,10 @@
         const points = lineString.getCoordinates().map(c => {
             return map.coordinateToContainerPoint(c).toArray();
         });
+
+        setTimeout(() => {
+            document.querySelector('#map').style.display = 'none';
+        }, 100);
 
         const canvas = document.createElement('canvas');
         const size = map.getSize();
