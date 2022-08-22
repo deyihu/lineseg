@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map - Display a map</title>
+<style type="text/css">
+    html,
+    body {
+        margin: 0px;
+        height: 100%;
+        width: 100%
+    }
+
+    .container {
+        width: 100%;
+        height: 100%
+    }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/maptalks/dist/maptalks.css">
+<script type="text/javascript" src="https://unpkg.com/maptalks/dist/maptalks.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/randomcolor@0.6.2/randomColor.js"></script>
+<script type="text/javascript"
+    src="https://maptalks.org/examples/cn/tilelayer-projection/tile-mask/raw/boundary.js"></script>
+<script type="text/javascript" src="../dist/lineseg.js"></script>
+
+<body>
+
+    <div id="map" class="container"></div>
+
+    <script>
+        var map = new maptalks.Map('map', {
+            center: [114.26529, 30.60545],
+            zoom: 13,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ["a", "b", "c", "d"],
+                attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+            })
+        });
+
+        const layer = new maptalks.VectorLayer('layer').addTo(map);
+        const line = boundary[0];
+        const time = 'time';
+        console.time(time);
+        const segs = lineseg.lineSeg(line, { segDistance: 100 });
+        console.timeEnd(time);
+        console.log(segs);
+        const lines = segs.map((seg, index) => {
+            return new maptalks.LineString(seg, {
+                symbol: {
+                    lineColor: index % 2 === 0 ? 'red' : 'black'
+                }
+            })
+        });
+        layer.addGeometry(lines);
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map - Display a map</title>
+<style type="text/css">
+    html,
+    body {
+        margin: 0px;
+        height: 100%;
+        width: 100%;
+        display: flex;
+    }
+
+    .container {
+        width: 50%;
+        height: 100%
+    }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/maptalks/dist/maptalks.css">
+<script type="text/javascript" src="https://unpkg.com/maptalks/dist/maptalks.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/randomcolor@0.6.2/randomColor.js"></script>
+<script type="text/javascript"
+    src="https://maptalks.org/examples/cn/tilelayer-projection/tile-mask/raw/boundary.js"></script>
+<script type="text/javascript" src="../dist/lineseg.js"></script>
+
+<body>
+
+    <div id="map" class="container"></div>
+
+    <script>
+
+        var map = new maptalks.Map('map', {
+            center: [114.26529, 30.60545],
+            zoom: 13.5,
+            baseLayer: new maptalks.TileLayer('base', {
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ["a", "b", "c", "d"],
+                attribution: '&copy; <a href="http://osm.org">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/">CARTO</a>'
+            })
+        });
+
+        const layer = new maptalks.VectorLayer('layer').addTo(map);
+        const line = boundary[0];
+        const lineString = new maptalks.LineString(line);
+        layer.addGeometry(lineString);
+
+        const points = lineString.getCoordinates().map(c => {
+            return map.coordinateToContainerPoint(c).toArray();
+        });
+        const time = 'time';
+        console.time(time);
+        const segs = lineseg.lineSeg(points, { segDistance: .1, isGeo: false });
+        console.timeEnd(time);
+        console.log(segs);
+
+        const canvas = document.createElement('canvas');
+        const size = map.getSize();
+        canvas.width = size.width;
+        canvas.height = size.height;
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+
+        segs.forEach((seg, index) => {
+            drawLine(seg, randomColor());
+        });
+
+
+        function drawLine(seg, color) {
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            for (let i = 0, len = seg.length; i < len; i++) {
+                const [x, y] = seg[i];
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.stroke();
+        }
+    </script>
+</body>
+
+</html>
