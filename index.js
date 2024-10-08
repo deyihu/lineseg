@@ -57,7 +57,7 @@ export function lineSeg(line, options = {}) {
             len: dis,
             p2
         });
-        totalLen += len;
+        totalLen += dis;
     }
     if (totalLen <= segDistance) {
         return list.map(d => {
