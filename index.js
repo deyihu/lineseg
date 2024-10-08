@@ -21,12 +21,18 @@ function geoDistance(c1, c2) {
         f = degreesToRadians(c1[0]) - degreesToRadians(c2[0]);
     b = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(e / 2), 2) + Math.cos(b) * Math.cos(d) * Math.pow(Math.sin(f / 2), 2)));
     b *= R;
-    return Math.round(b * 1E5) / 1E5;
+    const dis = Math.round(b * 1E5) / 1E5;
+    const z1 = c1[2] || 0, z2 = c2[2] || 0;
+    const dz = z1 - z2;
+    if (dz === 0) {
+        return dis;
+    }
+    return Math.sqrt(dis * dis + dz * dz);
 }
 
 function distance(p1, p2) {
-    const dx = p2[0] - p1[0], dy = p2[1] - p1[1];
-    return Math.sqrt(dx * dx + dy * dy);
+    const dx = p2[0] - p1[0], dy = p2[1] - p1[1], dz = (p2[2] || 0 - p1[2] || 0);
+    return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
 
 function getPercentLngLat(l, distance) {
