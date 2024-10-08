@@ -21,7 +21,8 @@
 <script type="text/javascript" src="https://unpkg.com/maptalks/dist/maptalks.min.js"></script>
 <script type="text/javascript"
     src="https://maptalks.org/examples/cn/tilelayer-projection/tile-mask/raw/boundary.js"></script>
-<script type="text/javascript" src="https://unpkg.com/lineseg/dist/lineseg.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/lineseg/dist/lineseg.js"></script>
+
 
 <body>
 
@@ -38,8 +39,13 @@
             })
         });
 
-        const layer = new maptalks.VectorLayer('layer').addTo(map);
+        const layer = new maptalks.VectorLayer('layer', {
+            enableAltitude: true
+        }).addTo(map);
         const line = boundary[0];
+        line.forEach(c => {
+            c[2] = Math.random() * 10 + 20
+        });
 
         function update() {
             layer.clear();
@@ -64,7 +70,7 @@
         }
 
         var gui = new dat.GUI({ width: 350 });
-        gui.add(params, 'segDistance', 1, 2000).onChange(update);
+        gui.add(params, 'segDistance', 10, 2000).onChange(update);
         update();
 
     </script>
